@@ -1,23 +1,25 @@
 package database;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
 import android.content.Context;
 
 import dao.CityDao;
+import dao.FriendsDao;
 import dao.WidgetCheckListDao;
 import objects.ChecklistItem;
 import objects.City;
+import objects.Friend;
 
 /**
  * Created by Santosh on 05/09/18.
  */
 
-@Database(entities = {City.class, ChecklistItem.class}, version = 3, exportSchema = false)
+@Database(entities = {City.class, ChecklistItem.class, Friend.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDataBase extends RoomDatabase {
 
@@ -25,6 +27,7 @@ public abstract class AppDataBase extends RoomDatabase {
 
 
     public abstract CityDao cityDao();
+    public abstract FriendsDao friendsDao();
     public abstract WidgetCheckListDao widgetCheckListDao();
 
     public static AppDataBase getAppDatabase(Context context) {
@@ -60,6 +63,12 @@ public abstract class AppDataBase extends RoomDatabase {
             // Create a temp table to generate positions
             database.execSQL("CREATE TABLE seq_generator(pos INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "id INTEGER)");
+
+            // Create table for friends
+            database.execSQL(
+                    "CREATE TABLE friends (id INTEGER PRIMARY KEY NOT NULL, name TEXT,"
+                    + "phone_number TEXT NOT NULL)"
+            );
 
             // Copy each of the existing id(s) into this; `pos` generated with 1-indexing
             database.execSQL("INSERT INTO seq_generator (id)" +

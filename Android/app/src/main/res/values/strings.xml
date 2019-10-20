@@ -97,6 +97,7 @@
     <string name="prompt_add_trip">Add trip</string>
     <string name="prompt_friend_name">Enter friend name</string>
     <string name="prompt_add_friend">Add New friend</string>
+    <string name="prompt_add_selected_friends">Add</string>
     <string name="text_started_on">Started on :  </string>
     <string name="progress_wait">Please wait…</string>
     <string name="trip_added">Trip added</string>
@@ -105,6 +106,8 @@
     <string name="my_trip">My Trips</string>
     <string name="no_trips">You don\'t have any trips. Click add button to get started</string>
     <string name="know_more_about">Know more about %1$s</string>
+    <string name="navigate_by">Navigate by</string>
+    <string name="google_maps_key">AIzaSyDfALbX8tCn010nG1ia6bui3-AwDZ9bkzI</string>
     <string name="friends_title">Travelling with someone? Add friends to this trip.</string>
     <string name="friends_show_title">Friends in this Trip</string>
     <string name="trip_name_updated">Trip name has been updated</string>

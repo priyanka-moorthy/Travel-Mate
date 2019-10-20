@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +28,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import database.AppDataBase;
 import io.github.project_travel_mate.R;
 import io.github.project_travel_mate.destinations.funfacts.FunFactsActivity;
@@ -407,4 +408,33 @@ public class FinalCityInfoActivity extends AppCompatActivity
         animationView.setAnimation(R.raw.network_lost);
         animationView.playAnimation();
     }
+
+    @OnClick(R.id.by_cycle)
+    void openMapBycle() {
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("city_latitude", mCity.getLatitude());
+        intent.putExtra("city_longitude", mCity.getLongitude());
+        intent.putExtra("mode", "bicycling");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.by_driving)
+    void openMapDriving() {
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("city_latitude", mCity.getLatitude());
+        intent.putExtra("city_longitude", mCity.getLongitude());
+        intent.putExtra("mode", "driving");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.by_walk)
+    void openMapWalk() {
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("city_latitude", mCity.getLatitude());
+        intent.putExtra("city_longitude", mCity.getLongitude());
+        intent.putExtra("mode", "walking");
+        startActivity(intent);
+    }
+
+
 }

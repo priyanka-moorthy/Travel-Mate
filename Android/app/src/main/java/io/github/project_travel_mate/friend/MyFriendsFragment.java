@@ -2,14 +2,16 @@ package io.github.project_travel_mate.friend;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +30,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import database.AppDataBase;
 import io.github.project_travel_mate.R;
+import objects.Friend;
 import objects.User;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -53,7 +58,9 @@ public class MyFriendsFragment extends Fragment {
     private Handler mHandler;
     private Activity mActivity;
     private MyFriendsAdapter mAdapter;
-
+    private AppDataBase mDatabase;
+    static int ADDNEWFRIEND_ACTIVITY = 204;
+    private  List<Friend> mMyFriends;
     public MyFriendsFragment() {
         // Required empty public constructor
     }
@@ -72,8 +79,26 @@ public class MyFriendsFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
         mToken = sharedPreferences.getString(USER_TOKEN, null);
         mHandler = new Handler(Looper.getMainLooper());
-        myFriends();
+        mDatabase = AppDataBase.getAppDatabase(this.getContext());
+
+        listMyFriends();
+//        myFriends();
         return view;
+
+    }
+
+    private void listMyFriends() {
+
+        mMyFriends = new ArrayList<>();
+        Friend[] friends = mDatabase.friendsDao().loadAll();
+        for (int i = 0; i < friends.length; i++) {
+            String friendName = friends[i].getmName();
+            mMyFriends.add(friends[i]);
+            animationView.setVisibility(GONE);
+            mAdapter = new MyFriendsAdapter(mActivity.getApplicationContext(), mMyFriends);
+            recyclerView.setAdapter(mAdapter);
+
+        }
 
     }
 
@@ -126,7 +151,7 @@ public class MyFriendsFragment extends Fragment {
                                 String status = object.getString("status");
                                 mFriends.add(new User(userName, firstName, lastName, id, imageURL, dateJoined, status));
                                 animationView.setVisibility(GONE);
-                                mAdapter = new MyFriendsAdapter(mActivity.getApplicationContext(), mFriends);
+//                                mAdapter = new MyFriendsAdapter(mActivity.getApplicationContext(), mFriends);
                                 recyclerView.setAdapter(mAdapter);
                             }
                         } catch (JSONException | IOException | NullPointerException e) {
@@ -160,10 +185,41 @@ public class MyFriendsFragment extends Fragment {
         animationView.playAnimation();
     }
 
+    /**
+     * Navigate to Add Friend
+     */
+    @OnClick(R.id.add_new_friend)
+    void addFriend() {
+        Intent intent = new Intent(getContext(), AddNewFriendActivity.class);
+        startActivityForResult(intent, ADDNEWFRIEND_ACTIVITY);
+
+    }
+
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        for (Fragment fragment : getFragmentManager().getFragments()) {
+//            if (fragment != null) {
+//                fragment.onActivityResult(requestCode, resultCode, data);
+//            }
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        listMyFriends();
+        mAdapter.notifyDataSetChanged();
+    }
+
+
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
         this.mActivity = (Activity) activity;
     }
+
+
+
+
 
 }

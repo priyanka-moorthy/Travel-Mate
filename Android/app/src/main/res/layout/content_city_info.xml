@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -193,6 +193,67 @@
                         android:text="@string/know_more_about"
                         android:textSize="18sp" />
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/navigate_modes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/shadow_1"
+                    android:backgroundTint="@color/black"
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    tools:targetApi="lollipop">
+
+                <TextView
+                    android:id="@+id/navigate_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:text="@string/navigate_by"
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/by_driving"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/white"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/baseline_directions_car_24" />
+
+                <ImageButton
+                    android:id="@+id/by_walk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/white"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/baseline_directions_walk_24" />
+
+                <ImageButton
+                    android:id="@+id/by_cycle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/white"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/baseline_directions_bike_24" />
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
 
@@ -448,4 +509,4 @@
 
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>
