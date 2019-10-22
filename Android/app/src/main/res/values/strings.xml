@@ -105,9 +105,10 @@
     <string name="no_friend_selected">Please select a valid friend to add</string>
     <string name="my_trip">My Trips</string>
     <string name="no_trips">You don\'t have any trips. Click add button to get started</string>
+    <string name="no_friends">You don\'t have any Friends. Click add button to get started</string>
     <string name="know_more_about">Know more about %1$s</string>
     <string name="navigate_by">Navigate by</string>
-    <string name="google_maps_key">AIzaSyDfALbX8tCn010nG1ia6bui3-AwDZ9bkzI</string>
+    <string name="google_maps_key">AIzaSyCxaSOJ_byc_1h7XQannTuR5PUb4s9Lm9Y</string>
     <string name="friends_title">Travelling with someone? Add friends to this trip.</string>
     <string name="friends_show_title">Friends in this Trip</string>
     <string name="trip_name_updated">Trip name has been updated</string>

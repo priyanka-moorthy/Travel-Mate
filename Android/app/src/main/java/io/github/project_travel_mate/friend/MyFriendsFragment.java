@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,8 +41,10 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import utils.TravelmateSnackbars;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static utils.Constants.API_LINK_V2;
 import static utils.Constants.USER_TOKEN;
 
@@ -61,6 +64,7 @@ public class MyFriendsFragment extends Fragment {
     private AppDataBase mDatabase;
     static int ADDNEWFRIEND_ACTIVITY = 204;
     private  List<Friend> mMyFriends;
+    private View mView;
     public MyFriendsFragment() {
         // Required empty public constructor
     }
@@ -73,31 +77,41 @@ public class MyFriendsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_friends, container, false);
-        ButterKnife.bind(this, view);
+        mView = inflater.inflate(R.layout.fragment_my_friends, container, false);
+        ButterKnife.bind(this, mView);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
         mToken = sharedPreferences.getString(USER_TOKEN, null);
         mHandler = new Handler(Looper.getMainLooper());
         mDatabase = AppDataBase.getAppDatabase(this.getContext());
 
-        listMyFriends();
+        Boolean isData = listMyFriends();
 //        myFriends();
-        return view;
+        return mView;
 
     }
 
-    private void listMyFriends() {
+    private Boolean listMyFriends() {
 
         mMyFriends = new ArrayList<>();
         Friend[] friends = mDatabase.friendsDao().loadAll();
-        for (int i = 0; i < friends.length; i++) {
-            String friendName = friends[i].getmName();
-            mMyFriends.add(friends[i]);
-            animationView.setVisibility(GONE);
-            mAdapter = new MyFriendsAdapter(mActivity.getApplicationContext(), mMyFriends);
-            recyclerView.setAdapter(mAdapter);
+        if (friends.length > 0) {
+            for (int i = 0; i < friends.length; i++) {
+                String friendName = friends[i].getmName();
+                mMyFriends.add(friends[i]);
+                animationView.setVisibility(GONE);
+                mAdapter = new MyFriendsAdapter(mActivity.getApplicationContext(), mMyFriends);
+                recyclerView.setAdapter(mAdapter);
 
+            }
+            return true;
+        } else {
+            TravelmateSnackbars.createSnackBar(mView.findViewById(R.id.my_friends_frag), R.string.no_friends,
+                    Snackbar.LENGTH_SHORT).show();
+            animationView.setAnimation(R.raw.empty_list);
+            animationView.setVisibility(View.VISIBLE);
+            animationView.playAnimation();
+            return false;
         }
 
     }
@@ -207,8 +221,10 @@ public class MyFriendsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        listMyFriends();
-        mAdapter.notifyDataSetChanged();
+        Boolean isData = listMyFriends();
+        if (isData) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
 

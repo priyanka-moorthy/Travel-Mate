@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
+    android:id="@+id/my_friends_frag"
     tools:context=".friend.MyFriendsFragment">
 
     <com.airbnb.lottie.LottieAnimationView
