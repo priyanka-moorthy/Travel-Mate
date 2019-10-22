@@ -11,12 +11,20 @@
     android:orientation="horizontal"
     android:layout_marginLeft="10dp">
 
+    <com.github.vipulasri.timelineview.TimelineView
+        android:id="@+id/timeline_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:markerSize="20dp"
+        app:lineSize="2dp"
+        app:line="@color/colorPrimary"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
+        card_view:contentPadding="100dp"
         card_view:cardCornerRadius="2dp">
 
         <RelativeLayout
@@ -32,7 +40,6 @@
                 android:paddingEnd="10dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/default_user_icon"
                 android:scaleType="centerCrop" />
 
             <TextView

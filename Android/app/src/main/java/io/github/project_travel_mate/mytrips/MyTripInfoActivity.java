@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -56,11 +57,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import database.AppDataBase;
 import io.github.project_travel_mate.FullScreenImage;
 import io.github.project_travel_mate.R;
 import io.github.project_travel_mate.destinations.description.FinalCityInfoActivity;
 import io.github.project_travel_mate.friend.FriendsProfileActivity;
 import objects.City;
+import objects.Friend;
 import objects.Trip;
 import objects.User;
 import okhttp3.Call;
@@ -135,6 +138,7 @@ public class MyTripInfoActivity extends AppCompatActivity implements TravelmateS
     boolean isUserPartofTrip;
     private String mUserEmail;
     boolean isTripPublic;
+    private AppDataBase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +149,8 @@ public class MyTripInfoActivity extends AppCompatActivity implements TravelmateS
 
         Intent intent = getIntent();
         mTrip = (Trip) intent.getSerializableExtra(EXTRA_MESSAGE_TRIP_OBJECT);
+        mDatabase = AppDataBase.getAppDatabase(this);
+
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mToken = sharedPreferences.getString(USER_TOKEN, null);
@@ -459,69 +465,30 @@ public class MyTripInfoActivity extends AppCompatActivity implements TravelmateS
 
         if (mNameYet.trim().equals(""))
             return;
+        Friend[] friends = mDatabase.friendsDao().loadAll();
+        if (friends.length > 0) {
+            ArrayList<String> arr = new ArrayList<>();
+            ArrayList<String> id = new ArrayList<>();
 
-        String uri = API_LINK_V2 + "get-user/" + mNameYet.trim();
-        Log.v("EXECUTING", uri);
 
-        //Set up client
-        OkHttpClient client = new OkHttpClient();
-        //Execute request
-        final Request request = new Request.Builder()
-                .header("Authorization", "Token " + mToken)
-                .url(uri)
-                .build();
-        //Setup callback
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("Request Failed", "Message : " + e.getMessage());
-                mHandler.post(() -> networkError());
+            for (int i = 0; i < friends.length; i++) {
+                String name = friends[i].getmName();
+                String friendId = friends[i].getmId();
+                arr.add(name);
+                id.add(friendId);
             }
 
-            @Override
-            public void onResponse(Call call, final Response response) {
-
-                mHandler.post(() -> {
-                    if (response.isSuccessful() && response.body() != null) {
-
-                        JSONArray arr;
-                        final ArrayList<String> id, email;
-                        try {
-                            String result = response.body().string();
-                            Log.e("RES", result);
-                            if (response.body() == null)
-                                return;
-                            arr = new JSONArray(result);
-
-                            id = new ArrayList<>();
-                            email = new ArrayList<>();
-                            for (int i = 0; i < arr.length(); i++) {
-                                try {
-                                    id.add(arr.getJSONObject(i).getString("id"));
-                                    email.add(arr.getJSONObject(i).getString("username"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Log.e("ERROR ", "Message : " + e.getMessage());
-                                }
-                            }
-                            ArrayAdapter<String> dataAdapter =
-                                    new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_layout, email);
-                            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            friendEmail.setAdapter(dataAdapter);
-                            friendEmail.setOnItemClickListener((arg0, arg1, arg2, arg3) -> mFriendId = id.get(arg2));
-                        } catch (JSONException | IOException e) {
-                            e.printStackTrace();
-                            networkError();
-                            Log.e("ERROR", "Message : " + e.getMessage());
-                        }
-                    } else {
-                        networkError();
-                    }
-                });
-
-            }
-        });
+            ArrayAdapter<String> dataAdapter =
+                    new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_layout, arr);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            friendEmail.setAdapter(dataAdapter);
+            friendEmail.setOnItemClickListener((arg0, arg1, arg2, arg3) -> mFriendId = id.get(arg2));
+        } else {
+            Toast.makeText(MyTripInfoActivity.this,
+                    "No Friends to add to Trip", Toast.LENGTH_SHORT).show();
+        }
     }
+
 
     private void addFriend() {
 

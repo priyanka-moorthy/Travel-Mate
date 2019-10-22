@@ -13,17 +13,22 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DataParser {
-    public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
+    public RoutesRespone parse(JSONObject jObject) {
 
         List<List<HashMap<String, String>>> routes = new ArrayList<>();
         JSONArray jRoutes;
         JSONArray jLegs;
         JSONArray jSteps;
+        String distance = "";
+        String duration = "";
         try {
             jRoutes = jObject.getJSONArray("routes");
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
+                distance = (String) ((JSONObject) ((JSONObject) jLegs.get(0)).get("distance")).get("text");
+                duration = (String) ((JSONObject) ((JSONObject) jLegs.get(0)).get("duration")).get("text");
+
                 List path = new ArrayList<>();
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
@@ -52,7 +57,8 @@ public class DataParser {
         } catch (Exception e) {
             Log.e("exception", e.toString());
         }
-        return routes;
+        RoutesRespone routesRespone = new RoutesRespone(distance, duration, routes);
+        return routesRespone;
     }
 
 
@@ -94,5 +100,41 @@ public class DataParser {
         }
 
         return poly;
+    }
+
+    public class RoutesRespone {
+        private String mDistance;
+        private String mDuration;
+        private  List<List<HashMap<String, String>>>  mRoutes;
+
+        public RoutesRespone(String distance, String duration,  List<List<HashMap<String, String>>> routes) {
+            this.mDistance = distance;
+            this.mDuration = duration;
+            this.mRoutes = routes;
+        }
+
+        public String getDistance() {
+            return mDistance;
+        }
+
+        public void setDistance(String distance) {
+            this.mDistance = distance;
+        }
+
+        public String getDuration() {
+            return mDuration;
+        }
+
+        public void setDuration(String duration) {
+            this.mDuration = duration;
+        }
+
+        public  List<List<HashMap<String, String>>> getRoutes() {
+            return mRoutes;
+        }
+
+        public void setRoutes( List<List<HashMap<String, String>>> routes) {
+            this.mRoutes = routes;
+        }
     }
 }

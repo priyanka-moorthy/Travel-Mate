@@ -136,9 +136,10 @@ public class AddNewTripActivity extends AppCompatActivity implements DatePickerD
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("trip_name", mTripname)
                 .addFormDataPart("city_id", mCityid)
-                .addFormDataPart("start_date_ tx", mStartdate)
+                .addFormDataPart("start_date_tx", mStartdate)
                 .build();
 
+        Log.v("body", requestBody.toString());
         //Execute request
         Request request = new Request.Builder()
                 .header("Authorization", "Token " + mToken)
